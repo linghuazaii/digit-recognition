@@ -84,13 +84,13 @@ class NeuralNetwork(object):
             zs.append(z)
             activation = sigmoid(z)
             activations.append(activation)
-        delta = self.cost_derivative(activations[-1], y) * sigmoid_derivative(zs[-1])
+        delta = self.cost_derivative(activations[-1], y) # * sigmoid_derivative(zs[-1])
         nabla_b[-1] = delta
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
         for l in xrange(2, self.num_layers):
             z = zs[-l]
-            sd = sigmoid_derivative(z)
-            delta = np.dot(self.weights[-l + 1].transpose(), delta) * sd
+            # sd = sigmoid_derivative(z)
+            delta = np.dot(self.weights[-l + 1].transpose(), delta) # * sd
             nabla_b[-l] = delta
             nabla_w[-l] = np.dot(delta, activations[-l - 1].transpose())
         return (nabla_b, nabla_w)
@@ -106,7 +106,7 @@ def main():
     nn = NeuralNetwork([784, 30, 10])
     train = load_train_data()
     test = load_test_data()
-    nn.stochasticGradientDescent(train, 30, 10, 0.1, test_data = test)
+    nn.stochasticGradientDescent(train, 30, 10, 0.002, test_data = test)
 
 if __name__ == "__main__":
     main()
