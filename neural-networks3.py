@@ -34,7 +34,7 @@ class NeuralNetwork(object):
         self.num_layers = len(sizes)
         self.sizes = sizes
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]
+        self.weights = [np.random.randn(y, x) / np.sqrt(x) for x, y in zip(sizes[:-1], sizes[1:])]
 
     def describe(self):
         print 'layers:', self.num_layers
@@ -89,8 +89,8 @@ class NeuralNetwork(object):
         nabla_w[-1] = np.dot(delta, activations[-2].transpose())
         for l in xrange(2, self.num_layers):
             z = zs[-l]
-            # sd = sigmoid_derivative(z)
-            delta = np.dot(self.weights[-l + 1].transpose(), delta) # * sd
+            sd = sigmoid_derivative(z)
+            delta = np.dot(self.weights[-l + 1].transpose(), delta) * sd
             nabla_b[-l] = delta
             nabla_w[-l] = np.dot(delta, activations[-l - 1].transpose())
         return (nabla_b, nabla_w)
@@ -106,7 +106,7 @@ def main():
     nn = NeuralNetwork([784, 100, 10])
     train = load_train_data()
     test = load_test_data()
-    nn.stochasticGradientDescent(train, 60, 10, 0.001, 10.0, test_data = test)
+    nn.stochasticGradientDescent(train, 60, 100, 1.0, 10.0, test_data = test)
 
 if __name__ == "__main__":
     main()
