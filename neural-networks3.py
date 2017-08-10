@@ -56,20 +56,20 @@ class NeuralNetwork(object):
             random.shuffle(training_data)
             mini_batches = [training_data[k: k + mini_batch_size] for k in xrange(0, n_train, mini_batch_size)]
             for mini_batch in mini_batches:
-                self.updateMiniBatch(mini_batch, eta, lm)
+                self.updateMiniBatch(mini_batch, eta, lm, n_train)
             if test_data:
                 print 'Epoch %s: %s / %s' % (j, self.evaluate(test_data), n_test)
             else:
                 print 'Epoch %s complete.' % j
 
-    def updateMiniBatch(self, mini_batch, eta, lm):
+    def updateMiniBatch(self, mini_batch, eta, lm, total_train):
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
             delta_nabla_b, delta_nabla_w = self.backprob(x, y)
             nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-        self.weights = [(1.0 - eta * lm / len(mini_batch)) * w - (eta / len(mini_batch)) * nw for w, nw in zip(self.weights, nabla_w)]
+        self.weights = [(1.0 - eta * lm / total_train) * w - (eta / len(mini_batch)) * nw for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b - (eta / len(mini_batch)) * nb for b, nb in zip(self.biases, nabla_b)]
 
     def backprob(self, x, y):
@@ -106,7 +106,7 @@ def main():
     nn = NeuralNetwork([784, 30, 10])
     train = load_train_data()
     test = load_test_data()
-    nn.stochasticGradientDescent(train, 30, 10, 0.002, test_data = test)
+    nn.stochasticGradientDescent(train, 30, 10, 0.002, 0.1, test_data = test)
 
 if __name__ == "__main__":
     main()
