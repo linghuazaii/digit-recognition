@@ -106,7 +106,7 @@ def main():
     nn = NeuralNetwork([784, 100, 10])
     train = load_train_data()
     test = load_test_data()
-    nn.stochasticGradientDescent(train, 60, 10, 0.001, 5.0, test_data = test)
+    nn.stochasticGradientDescent(train, 30, 10, 0.002, 10.0, test_data = test)
 
 if __name__ == "__main__":
     main()
